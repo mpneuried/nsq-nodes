@@ -1,4 +1,4 @@
-_ = require('lodash')
+_isArray = require('lodash/isArray')
 
 utils =
 	randomString: ( string_length = 5, specialLevel = 0 ) ->
@@ -22,8 +22,8 @@ utils =
 	clone: (inp)->
 		return JSON.parse(JSON.stringify(inp))
 
-	nn: ( node )=>
-		if _.isArray( node )
+	nn: ( node )->
+		if _isArray( node )
 			_names = for _n in node
 				utils.nn( _n )
 			return _names

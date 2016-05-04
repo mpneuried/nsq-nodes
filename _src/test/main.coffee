@@ -1,5 +1,5 @@
 should = require('should')
-_ = require('lodash')
+_difference = require('lodash/difference')
 
 NsqNodes = require( "../lib/main" )
 
@@ -27,23 +27,24 @@ _testArray = ( inp, pred )->
 	
 _setAddresses = ( servers )->
 	for server in servers
-		CNF.lookupdHTTPAddresses.push server.address().address + "" + server.address().port
+		CNF.lookupdHTTPAddresses.push server.address().address + ":" + server.address().port
 	return
 
 describe "----- nsq-nodes TESTS -----", ->
 
 	before ( done )->
 		nodeSimulator = require( "./server" )
-		nsqnodes = new NsqNodes( CNF )
 		
 		if nodeSimulator.running
 			_setAddresses( nodeSimulator.servers )
+			nsqnodes = new NsqNodes( CNF )
 			done()
 			return
 		
 		nodeSimulator.on "running", ( servers )->
 			# wait until simulation server is running
 			_setAddresses( servers )
+			nsqnodes = new NsqNodes( CNF )
 			done()
 			return
 		return
@@ -84,7 +85,7 @@ describe "----- nsq-nodes TESTS -----", ->
 				nsqnodes.on( "add", _check )
 				
 				# step to the next test
-				_nodesDiff = _.difference( test.next().names(), _before )
+				_nodesDiff = _difference( test.next().names(), _before )
 				
 				return
 			return
@@ -116,7 +117,7 @@ describe "----- nsq-nodes TESTS -----", ->
 				nsqnodes.on( "add", _check )
 				
 				# step to the next test
-				_nodesDiff = _.difference( test.next().names(), _before )
+				_nodesDiff = _difference( test.next().names(), _before )
 				
 				return
 			return
@@ -159,7 +160,7 @@ describe "----- nsq-nodes TESTS -----", ->
 			
 			# step to the next test
 			_before = test.names()
-			_nodesDiff = _.difference( _before, test.next().names() )
+			_nodesDiff = _difference( _before, test.next().names() )
 				
 			return
 		
@@ -186,7 +187,7 @@ describe "----- nsq-nodes TESTS -----", ->
 			nsqnodes.on( "remove", _check )
 			
 			# step to the next test
-			_nodesDiff = _.difference( _before, test.next().names() )
+			_nodesDiff = _difference( _before, test.next().names() )
 
 			return
 		
@@ -247,8 +248,8 @@ describe "----- nsq-nodes TESTS -----", ->
 			
 			# step to the next test
 			_after = test.next().names()
-			_nodesRem = _.difference( _before, _after )
-			_nodesAdd = _.difference( _after, _before )
+			_nodesRem = _difference( _before, _after )
+			_nodesAdd = _difference( _after, _before )
 
 			return
 		
@@ -284,7 +285,7 @@ describe "----- nsq-nodes TESTS -----", ->
 			nsqnodes.on( "add", _check )
 			
 			# step to the next test
-			_nodesDiff = _.difference( test.next().names(), _before )
+			_nodesDiff = _difference( test.next().names(), _before )
 			
 			return
 			
@@ -383,7 +384,7 @@ describe "----- nsq-nodes TESTS -----", ->
 					
 					# step to the next test
 					_before = test.names()
-					_nodesDiff = _.difference( test.next().names(), _before )
+					_nodesDiff = _difference( test.next().names(), _before )
 				
 				, 1000 )
 				return

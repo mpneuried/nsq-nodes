@@ -1,6 +1,6 @@
 {
   "name": "nsq-nodes",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Nsq helper to poll a nsqlookupd service for all it's nodes and mirror it locally.",
   "keywords": [],
   "homepage": "https://github.com/mpneuried/nsq-nodes",
@@ -25,7 +25,7 @@
   "dependencies": {
     "async": "1.5.x",
     "hyperrequest": "0.0.x",
-    "lodash": "^3.10.1",
+    "lodash": "4.x",
     "mpbasic": "0.0.x"
   },
   "devDependencies": {
@@ -39,7 +39,6 @@
     "grunt-mocha-cli": "*",
     "grunt-regarde": "*",
     "morgan": "^1.6.1",
-    "should": "8.0.x",
-    "should-sinon": "0.0.3"
+    "should": "8.x"
   }
 }

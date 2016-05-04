@@ -5,10 +5,18 @@
 
 # **npm modules**
 async = require( "async" )
-_ = require( "lodash" )
+_compact = require( "lodash/compact" )
+_difference = require( "lodash/difference" )
+_values = require( "lodash/values" )
+_isString = require( "lodash/isString" )
+_isArray = require( "lodash/isArray" )
+_isFunction = require( "lodash/isFunction" )
+_isRegExp = require( "lodash/isRegExp" )
+
+request = require( "hyperrequest" )
 
 # **internal modules**
-request = require( "hyperrequest" )
+Config = require "./config"
 
 NODES = {}
 
@@ -27,15 +35,35 @@ class NsqNodes extends require( "mpbasic" )()
 			# **active** *Boolean* Configuration to (de)activate the nsq nodes
 			active: true
 
-	constructor: ->
+	constructor: ( options = {} )->
+		@connected = false
 		@ready = false
-		
-		super
+
+		@on "_log", @_log
+
+		@getter "classname", ->
+			return @constructor.name.toLowerCase()
+
+		# extend the internal config
+		if options instanceof Config
+			@config = options
+		else
+			@config = new Config( @extend( @defaults(), options ) )
+
+		if not @config.active
+			@log "warning", "disabled"
+			return
+
+		# init errors
+		@_initErrors()
+
+		@debug "loaded"
 		
 		@list = @_waitUntil( @_list, "ready" )
 		
 		@_start()
 		return
+
 	
 	_start: =>
 		if not @config.active
@@ -67,7 +95,7 @@ class NsqNodes extends require( "mpbasic" )()
 	
 	_list: ( cb )->
 		process.nextTick ->
-			cb( null, _.values( NODES ) )
+			cb( null, _values( NODES ) )
 			return
 		return @
 
@@ -76,7 +104,7 @@ class NsqNodes extends require( "mpbasic" )()
 			@warning "nsq nodes disabled"
 			return
 		
-		if _.isString( @config.lookupdHTTPAddresses )
+		if _isString( @config.lookupdHTTPAddresses )
 			aFns = [ @_fetch( @config.lookupdHTTPAddresses ) ]
 		else
 			aFns = for host in @config.lookupdHTTPAddresses
@@ -87,7 +115,7 @@ class NsqNodes extends require( "mpbasic" )()
 				@error "multi fetch", err
 				return
 				
-			aNodes = _.compact( results )
+			aNodes = _compact( results )
 			if not aNodes.length
 				_err = @_handleError( true, "EUNAVAILIBLE" )
 				
@@ -120,8 +148,8 @@ class NsqNodes extends require( "mpbasic" )()
 		return
 		
 	_setNodeList: ( _nodes )=>
-		_removedNodes = _.difference( Object.keys( NODES ), Object.keys( _nodes ) )
-		_newNodes = _.difference( Object.keys( _nodes ), Object.keys( NODES ) )
+		_removedNodes = _difference( Object.keys( NODES ), Object.keys( _nodes ) )
+		_newNodes = _difference( Object.keys( _nodes ), Object.keys( NODES ) )
 		
 		if not _removedNodes.length and not _newNodes.length
 			@debug "no node change"
@@ -130,7 +158,7 @@ class NsqNodes extends require( "mpbasic" )()
 		_oldNodes = NODES
 		NODES = _nodes
 
-		@emit( "change", _.values( NODES ) )
+		@emit( "change", _values( NODES ) )
 		for _nd in _newNodes
 			@emit( "add", NODES[ _nd ] )
 		for _nd in _removedNodes
@@ -147,7 +175,7 @@ class NsqNodes extends require( "mpbasic" )()
 			# delete teh current filter
 			@nodeFilter = null
 		
-		else if _.isString( filter )
+		else if _isString( filter )
 			# if the string filter starts with "regexp:" interpret it as a regular expression
 			if filter[0..6] is "regexp:"
 				regexp = new RegExp(filter[7..])
@@ -157,15 +185,15 @@ class NsqNodes extends require( "mpbasic" )()
 			@nodeFilter = ( node, name )->
 				return name is filter
 
-		else if _.isArray( filter )
+		else if _isArray( filter )
 			@nodeFilter = ( node, name )->
 				return name in filter
 
-		else if _.isFunction( filter )
+		else if _isFunction( filter )
 			@nodeFilter = ( node, name )->
 				return filter( node, name )
 
-		else if _.isRegExp( filter )
+		else if _isRegExp( filter )
 			@nodeFilter = ( node, name )->
 				return filter.test( name )
 		
@@ -195,7 +223,7 @@ class NsqNodes extends require( "mpbasic" )()
 					cb( null, null )
 					return
 
-				if _.isString( result.body )
+				if _isString( result.body )
 					_body = JSON.parse( result.body )
 				else
 					_body = result.body
@@ -215,7 +243,7 @@ class NsqNodes extends require( "mpbasic" )()
 		return nodes
 
 	genName: ( prod )=>
-		if _.isArray( prod )
+		if _isArray( prod )
 			_names = for _pr in prod
 				@genName( _pr )
 			return _names
