@@ -25,7 +25,8 @@ class NsqNodes extends require( "mpbasic" )()
 
 	# ## defaults
 	defaults: =>
-		@extend super,
+		data = super()
+		@extend data,
 			# **lookupdHTTPAddresses** *String|String[]* A single or multiple nsqlookupd hosts.
 			lookupdHTTPAddresses: [ "127.0.0.1:4161", "127.0.0.1:4163" ]
 			# **lookupdHTTPAddresses** *Number* Time in seconds to poll the nsqlookupd servers to sync the availible nodes
@@ -36,13 +37,11 @@ class NsqNodes extends require( "mpbasic" )()
 			active: true
 
 	constructor: ( options = {} )->
+		super()
 		@connected = false
 		@ready = false
 
 		@on "_log", @_log
-
-		@getter "classname", ->
-			return @constructor.name.toLowerCase()
 
 		# extend the internal config
 		if options instanceof Config
@@ -228,8 +227,8 @@ class NsqNodes extends require( "mpbasic" )()
 				else
 					_body = result.body
 
-				if _body.status_code is 200
-					cb( null, @_processReturn( _body.data ) )
+				if result.statusCode is 200
+					cb( null, @_processReturn( _body ) )
 				return
 			return
 
@@ -250,7 +249,7 @@ class NsqNodes extends require( "mpbasic" )()
 		return prod.hostname + "_" + prod.http_port
 
 	ERRORS: =>
-		@extend super,
+		@extend super(),
 			"EUNAVAILIBLE": [ 404, "No nsq-lookup servers availible" ]
 			"EINVALIDFILTER": [ 500, "Only `null` valiables of type `String`, `Array`, `Function` or `RegExp` are allowed as filter" ]
 

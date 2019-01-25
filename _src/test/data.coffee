@@ -20,18 +20,18 @@ for idx in [ 0..3 ]
 	nodes.push genNode()
 
 _data = [
-	 utils.clone( ( nodes ) ),
-	 utils.clone( ( nodes.push( genNode() ); nodes ) ),
-	 utils.clone( ( nodes.push( genNode() ); nodes.push( genNode() ); nodes ) ),
-	 utils.clone( ( nodes.push( genNode() ); nodes.push( genNode() ); nodes ) ),
-	 utils.clone( ( nodes.splice(0,1); nodes ) ),
-	 utils.clone( ( nodes.splice(0,2); nodes ) ),
-	 utils.clone( ( nodes.splice(0,2); nodes ) ),
-	 utils.clone( ( nodes.push( genNode() ); nodes.push( genNode() ); nodes.splice(0,2); nodes ) ),
-	 utils.clone( ( nodes.push( genNode("_") ); nodes.push( genNode("_")); nodes ) ),
-	 utils.clone( ( nodes.push( genNode() ); nodes.push( genNode() ); nodes ) ),
-	 utils.clone( ( nodes.push( genNode() ); nodes ) ),
-	 utils.clone( ( nodes.push( genNode() ); nodes ) )
+	utils.clone( ( nodes ) ),
+	utils.clone( ( nodes.push( genNode() ); nodes ) ),
+	utils.clone( ( nodes.push( genNode() ); nodes.push( genNode() ); nodes ) ),
+	utils.clone( ( nodes.push( genNode() ); nodes.push( genNode() ); nodes ) ),
+	utils.clone( ( nodes.splice(0,1); nodes ) ),
+	utils.clone( ( nodes.splice(0,2); nodes ) ),
+	utils.clone( ( nodes.splice(0,2); nodes ) ),
+	utils.clone( ( nodes.push( genNode() ); nodes.push( genNode() ); nodes.splice(0,2); nodes ) ),
+	utils.clone( ( nodes.push( genNode("_") ); nodes.push( genNode("_")); nodes ) ),
+	utils.clone( ( nodes.push( genNode() ); nodes.push( genNode() ); nodes ) ),
+	utils.clone( ( nodes.push( genNode() ); nodes ) ),
+	utils.clone( ( nodes.push( genNode() ); nodes ) )
 ]
 _len = _data.length
 
@@ -43,10 +43,7 @@ _current = ->
 	
 fn = ->
 	_resp =
-		"status_code": 200
-		"status_txt": "OK"
-		"data":
-			"producers": _current()
+		"producers": _current()
 	return _resp
 	
 	

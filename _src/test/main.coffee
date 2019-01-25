@@ -49,8 +49,9 @@ describe "----- nsq-nodes TESTS -----", ->
 			return
 		return
 
-	after ( done )->
+	after ( done )->		
 		done()
+		process.exit(0)
 		return
 
 	describe 'Main Tests', ->

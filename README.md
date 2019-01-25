@@ -199,6 +199,7 @@ nodes.on( "ready", function( err ){
 ## Release History
 |Version|Date|Description|
 |:--:|:--:|:--|
+|1.0.0|2019-01-25|updated nodes response handler to match nsq >= 1.x format|
 |0.0.3|2016-05-04|Another configuration bugfix |
 |0.0.2|2016-05-04|Bugfix configuration and update to lodash|
 |0.0.1|2015-11-27|Initial commit|

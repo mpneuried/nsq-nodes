@@ -2,15 +2,12 @@ os:
   - linux
 language: node_js
 node_js:
-  - 0.10
-  - 0.12
-  - 4.0
-  - 4.1
-  - 4.2
-  - 5.0
-  - 5.1
-  - 5.2
-  - iojs
+  - 4
+  - 6
+  - 8
+  - 10
+  - lts/*
+  - node
 before_script:
   - "npm install -g mocha grunt-cli"
   - "grunt build"
