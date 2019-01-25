@@ -228,7 +228,10 @@ class NsqNodes extends require( "mpbasic" )()
 					_body = result.body
 
 				if result.statusCode is 200
-					cb( null, @_processReturn( _body ) )
+					if _body.status_code?
+						cb( null, @_processReturn( _body.data ) )
+					else
+						cb( null, @_processReturn( _body ) )
 				return
 			return
 

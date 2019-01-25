@@ -42,8 +42,15 @@ _current = ->
 	return _data[ idx ]
 	
 fn = ->
-	_resp =
-		"producers": _current()
+	if( utils.randRange( 0,1 ) )
+		_resp =
+			"producers": _current()
+	else
+		_resp =
+			"status_code": 200
+			"status_txt": "OK"
+			"data":
+				"producers": _current()
 	return _resp
 	
 	
